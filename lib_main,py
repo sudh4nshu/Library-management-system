@@ -1,0 +1,124 @@
+"""
+WORKFLOW OF PROJECT:
+1- Initialize a dictionary to store books and their status
+2- Automatically display "Available" and "Issued" sections at the top
+3- Input from user (1.Add, 2.Issue, 3.Return, 4.Fine, 5.Exit)
+4- Function calls to handle library operations
+
+Cases:
+A- Add Book
+Input New Name -> Add to dictionary with status "Available"
+
+B- Issue Book
+If Status == "Available" -> Change to Student Name (Success)
+Else -> Print "Already Issued"
+
+C- Return Book
+Input Name -> Change status back to "Available"
+
+D- Fine Calculation
+Fine = (Days // 10) * 40
+"""
+
+# Book Records: { "Book Name": "Status" }
+books = {
+    "Python": "Available",
+    "Cyber": "Available",
+    "Java": "Available",
+    "Networking": "Available"
+}
+
+def display_dashboard():
+    print("\n" + "="*40)
+    print("      --- LIBRARY DASHBOARD ---")
+    print("="*40)
+    
+    # 1. Show AVAILABLE books section
+    print("\n[ AVAILABLE BOOKS ]")
+    available_found = False
+    for book, status in books.items():
+        if status == "Available":
+            print(f"  ✔ {book}")
+            available_found = True
+    if not available_found:
+        print("  (No books available)")
+
+    # 2. Show ISSUED books section
+    print("\n[ CURRENTLY ISSUED ]")
+    issued_found = False
+    for book, status in books.items():
+        if status != "Available":
+            print(f"  ✖ {book} (Taken by: {status})")
+            issued_found = True
+    if not issued_found:
+        print("  (No books issued)")
+    print("="*40)
+
+def add_book(book_name):
+    if book_name not in books:
+        books[book_name] = "Available"
+        print(f"\nRESULT: '{book_name}' added successfully.")
+    else:
+        print("\nRESULT: Error! Book already exists.")
+
+def issue_book(book_name, student_name):
+    if book_name in books:
+        if books[book_name] == "Available":
+            books[book_name] = student_name
+            print(f"\nRESULT: '{book_name}' issued to {student_name}.")
+        else:
+            print(f"\nRESULT: Error! '{book_name}' is already taken.")
+    else:
+        print("\nRESULT: Error! Book not found.")
+
+def return_book(book_name):
+    if book_name in books:
+        if books[book_name] != "Available":
+            print(f"\nRESULT: '{book_name}' returned by {books[book_name]}.")
+            books[book_name] = "Available"
+        else:
+            print("\nRESULT: Error! This book is already available.")
+    else:
+        print("\nRESULT: Error! Book not found.")
+
+def calculate_fine(days):
+    blocks = days // 10
+    total = blocks * 40
+    print(f"\nLOGIC: {blocks} blocks of 10 days.")
+    print(f"TOTAL FINE: ₹{total}")
+
+# MAIN MENU LOOP
+while True:
+    # Always show Dashboard at the top
+    display_dashboard()
+    
+    print("\nCHOOSE AN OPTION:")
+    print("1. Add a New Book")
+    print("2. Issue a Book")
+    print("3. Return a Book")
+    print("4. Calculate Late Fine")
+    print("5. Exit System")
+    
+    choice = input("\nEnter choice (1-5): ")
+
+    if choice == "1":
+        name = input("Enter new book name: ")
+        add_book(name)
+    elif choice == "2":
+        b = input("Enter book to issue: ")
+        s = input("Enter student name: ")
+        issue_book(b, s)
+    elif choice == "3":
+        r = input("Enter book to return: ")
+        return_book(r)
+    elif choice == "4":
+        try:
+            d = int(input("How many days late? "))
+            calculate_fine(d)
+        except ValueError:
+            print("Error: Please enter a number for days.")
+    elif choice == "5":
+        print("\nExiting Library System. Good luck tomorrow!")
+        break
+    else:
+        print("\nInvalid Choice. Please enter 1-5.")
